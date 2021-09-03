@@ -183,12 +183,11 @@ end
 
 function get_green(nside::Int, fname=nothing; nside_hires=nside)
     if fname == nothing
-        fname = "$root/cache/Gang_nside$(nside)_$(nside_hires).bin"
+        fname = "$cachedir_greensmatrix/Gang_nside$(nside)_$(nside_hires).bin"
     end
     npix = nside2npix(nside)
     if !isfile(fname)
         @timeit "Angular Green's matrix (nside,nside_hires)=($nside,$nside_hires)" G = calc_green(fill(1.0, npix), nside_hires=nside_hires)
-        mkpath("$root/cache/")
         write(fname, G)
     end
     return Hermitian(read!(fname, fill(NaN, npix, npix)))

@@ -24,12 +24,17 @@ include("Splines.jl")
 using .Splines
 
 using TimerOutputs
-const root = realpath((@__DIR__)*"/..")
 
 #include("SciPy.jl")
 #using .SciPy
 using FastTransforms
 #using SphericalHarmonics
+
+using Scratch
+cachedir_greensmatrix = ""
+function __init__()
+    global cachedir_greensmatrix = @get_scratch!("greensmatrix")
+end
 
 
 ################### CryoFaB basis ######################
