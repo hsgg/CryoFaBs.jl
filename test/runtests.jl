@@ -74,6 +74,28 @@ using Test
     end
 
 
+    @testset "estimate_density_contrast" begin
+        nside = 8
+        rmin = 500.0
+        rmax = 1500.0
+        nbins = 50
+        Ngals = 10^5
+
+        mask = fill(1.0, nside2npix(nside))
+
+        cfb = AngRadCryoFaB(mask, rmin, rmax, nbins)
+
+        rθϕ = fill(NaN32, 3, Ngals)
+        @. rθϕ[1,:] = rmin + (rmax - rmin) * rand()
+        @. rθϕ[2,:] = π * rand()
+        @. rθϕ[3,:] = 2 * π * rand() - π
+
+        @time n_g = CryoFaBs.calc_numgals_per_cell(rθϕ, cfb)
+        @time n_g = CryoFaBs.calc_numgals_per_cell(rθϕ, cfb)
+        @time n_g = CryoFaBs.calc_numgals_per_cell(rθϕ, cfb)
+    end
+
+
     @testset "cryobin" begin
         println("No binning:")
         kk = collect(0:0.1:1)

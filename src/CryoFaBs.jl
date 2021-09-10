@@ -216,7 +216,7 @@ function isinsurvey(cfb::AngRadCryoFaB, r, θ, ϕ)
 
     rbounds = get_rbounds(cfb)
     i = (r == cfb.rmax) ? length(cfb.reff) : searchsortedlast(rbounds, r)
-    if i == nothing || i < 1 || i > length(cfb.reff) || r > cfb.rmax
+    if !(1 <= i <= length(cfb.reff))
         return false
     end
     return true
@@ -228,7 +228,7 @@ function coord2cell(cfb::AngRadCryoFaB, r, θ, ϕ)
 
     rbounds = get_rbounds(cfb)
     i = (r == cfb.rmax) ? length(cfb.reff) : searchsortedlast(rbounds, r)
-    if i == nothing || i < 1 || i > length(cfb.reff) || r > cfb.rmax
+    if !(1 <= i <= length(cfb.reff))
         error("radial dist outside of survey: (r,θ,ϕ)=($r,$θ,$ϕ), $i, $(length(cfb.reff))")
     end
 
@@ -294,6 +294,7 @@ function calc_numgals_per_cell(rθϕ, cfb::CryoFaB)
     N = fill(T(0), size(cfb,1))
     for i=1:size(rθϕ,2)
         p = coord2cell(cfb, rθϕ[:,i]...)
+        #p = coord2cell(cfb, rθϕ[1,i], rθϕ[2,i], rθϕ[3,i])
         N[p] += 1
     end
     return N
