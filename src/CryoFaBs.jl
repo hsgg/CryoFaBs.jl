@@ -283,26 +283,59 @@ end
 
 ################### estimate density contrast ##########
 
-function estimate_density_contrast(rθϕ, cfb::CryoFaB)
-    δ = fill(0.0, size(cfb,1))
+@doc raw"""
+calc_numgals_per_cell(rθϕ, cfb::CryoFaB)
 
-    # count galaxies in each voxel
+Calculate the number of galaxies in `rθϕ` in each pixel or voxel in the survey
+that `cfb` can act on. The radial coordinates are in `rθϕ[1,:]`, etc.
+"""
+function calc_numgals_per_cell(rθϕ, cfb::CryoFaB)
+    T = Float64  # need to allow floats for easy conversion to a density contrast
+    N = fill(T(0), size(cfb,1))
     for i=1:size(rθϕ,2)
         p = coord2cell(cfb, rθϕ[:,i]...)
-        δ[p] += 1
+        N[p] += 1
     end
+    return N
+end
 
-    # turn n(r⃗) into δ(r⃗)
-    r_sorted = sort(rθϕ[1,:])
+
+function numgals2densitycontrast!(δ, cfb::AngRadCryoFaB)
     rbounds = get_rbounds(cfb)
     for i=2:length(rbounds)
-        ntotz = sum(rbounds[i-1] .<= r_sorted .< rbounds[i])
         p = get_pixs_at_r(cfb, i-1)
+        ntotz = sum(δ[p])
         nofz = ntotz / length(p)  # average number of galaxies per pixel
-        @. δ[p] .= δ[p] / nofz - 1
+        @. δ[p] = δ[p] / nofz - 1
     end
-
     return δ
+end
+
+function numgals2densitycontrast(δ, cfb::AngRadCryoFaB)
+    return numgals2densitycontrast!(deepcopy(δ), cfb)
+end
+
+
+@doc raw"""
+estimate_density_contrast(rθϕ, cfb::CryoFaB)
+
+Estimate the density contrast from the galaxy positions in `rθϕ`.
+"""
+function estimate_density_contrast(rθϕ, cfb::AngRadCryoFaB)
+    δ = calc_numgals_per_cell(rθϕ, cfb)
+    numgals2densitycontrast!(δ, cfb)
+    return δ
+end
+
+
+function calc_angular_average(nr, cfb::CryoFaB)
+    rbounds = get_rbounds(cfb)
+    nbar = fill(float(eltype(nr)(NaN)), length(rbounds) - 1)
+    for i=1:length(rbounds)-1
+        p = get_pixs_at_r(cfb, i)
+        nbar[i] = mean(nr[p])
+    end
+    return nbar
 end
 
 
