@@ -187,7 +187,7 @@ function isinsurvey(cfb::AngularCryoFaB, θ, ϕ)
 end
 
 
-function coord2bin(cfb::AngularCryoFaB, θ, ϕ)
+function coord2cell(cfb::AngularCryoFaB, θ, ϕ)
     p = ang2pix(cfb.mask, θ, ϕ)
     p = cfb.hpix_full2survey[p]
     if p == 0
@@ -223,8 +223,8 @@ function isinsurvey(cfb::AngRadCryoFaB, r, θ, ϕ)
 end
 
 
-function coord2bin(cfb::AngRadCryoFaB, r, θ, ϕ)
-    p = coord2bin(cfb.angfab, θ, ϕ)
+function coord2cell(cfb::AngRadCryoFaB, r, θ, ϕ)
+    p = coord2cell(cfb.angfab, θ, ϕ)
 
     rbounds = get_rbounds(cfb)
     i = (r == cfb.rmax) ? length(cfb.reff) : searchsortedlast(rbounds, r)
@@ -288,7 +288,7 @@ function estimate_density_contrast(rθϕ, cfb::CryoFaB)
 
     # count galaxies in each voxel
     for i=1:size(rθϕ,2)
-        p = coord2bin(cfb, rθϕ[:,i]...)
+        p = coord2cell(cfb, rθϕ[:,i]...)
         δ[p] += 1
     end
 
