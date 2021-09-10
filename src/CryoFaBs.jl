@@ -8,6 +8,7 @@ module CryoFaBs
 
 
 export CryoFaB, AngularCryoFaB, AngRadCryoFaB
+export isinsurvey
 export estimate_density_contrast
 export angular_cryo_window
 export cryobin
@@ -84,7 +85,7 @@ struct AngRadCryoFaB <: CryoFaB  # CryoFaB that separates angular and radial bas
     RadTransInv::BlockDiagonal{Float64}
 end
 
-# IO is in a separate file:
+
 include("io.jl")
 include("cryofunks_angular.jl")
 include("cryofunks_radial.jl")
@@ -176,6 +177,16 @@ Base.size(cfb::AngRadCryoFaB) = size(cfb.RadTrans,1), size(cfb.AngTrans,2)
 Base.size(cfb::AngRadCryoFaB, i) = (i==1) ? size(cfb.RadTrans,1) : size(cfb.AngTrans,2)
 
 
+function isinsurvey(cfb::AngularCryoFaB, θ, ϕ)
+    p = ang2pix(cfb.mask, θ, ϕ)
+    p = cfb.hpix_full2survey[p]
+    if p == 0
+        return false
+    end
+    return true
+end
+
+
 function coord2bin(cfb::AngularCryoFaB, θ, ϕ)
     p = ang2pix(cfb.mask, θ, ϕ)
     p = cfb.hpix_full2survey[p]
@@ -195,6 +206,20 @@ end
 
 function idx2mode(cfb::AngularCryoFaB, i)
     return cfb.ell[i]
+end
+
+
+function isinsurvey(cfb::AngRadCryoFaB, r, θ, ϕ)
+    if !isinsurvey(cfb.angfab, θ, ϕ)
+        return false
+    end
+
+    rbounds = get_rbounds(cfb)
+    i = (r == cfb.rmax) ? length(cfb.reff) : searchsortedlast(rbounds, r)
+    if i == nothing || i < 1 || i > length(cfb.reff) || r > cfb.rmax
+        return false
+    end
+    return true
 end
 
 
