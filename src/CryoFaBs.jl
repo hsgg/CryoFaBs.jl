@@ -20,6 +20,7 @@ using Healpix
 using Statistics
 using SparseArrays
 using SpecialFunctions
+using ThreadsX
 
 include("Splines.jl")
 using .Splines
@@ -289,7 +290,7 @@ calc_numgals_per_cell(rθϕ, cfb::CryoFaB)
 Calculate the number of galaxies in `rθϕ` in each pixel or voxel in the survey
 that `cfb` can act on. The radial coordinates are in `rθϕ[1,:]`, etc.
 """
-function calc_numgals_per_cell(rθϕ, cfb::CryoFaB)
+function calc_numgals_per_cell_v1(rθϕ, cfb::CryoFaB)
     T = Float64  # need to allow floats for easy conversion to a density contrast
     N = fill(T(0), size(cfb,1))
     for i=1:size(rθϕ,2)
@@ -299,6 +300,21 @@ function calc_numgals_per_cell(rθϕ, cfb::CryoFaB)
     end
     return N
 end
+function calc_numgals_per_cell(rθϕ, cfb::AngRadCryoFaB)
+    T = Float64  # need to allow floats for easy conversion to a density contrast
+    N = fill(T(0), size(cfb,1))
+    #@time pix1 = coord2cell.(Ref(cfb), rθϕ[1,:], rθϕ[2,:], rθϕ[3,:])
+    #@time pix2 = map((x,y,z)->coord2cell(cfb, x, y, z), rθϕ[1,:], rθϕ[2,:], rθϕ[3,:])
+    @time pix3 = ThreadsX.map((r,θ,ϕ)->coord2cell(cfb, r, θ, ϕ), rθϕ[1,:], rθϕ[2,:], rθϕ[3,:])
+    #@time pix4 = @strided coord2cell.(Ref(cfb), rθϕ[1,:], rθϕ[2,:], rθϕ[3,:])
+    #@assert pix1 == pix2
+    #@assert pix1 == pix3
+    @time for p in pix3
+        N[p] += 1
+    end
+    return N
+end
+
 
 
 function numgals2densitycontrast!(δ, cfb::AngRadCryoFaB)

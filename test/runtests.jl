@@ -90,9 +90,13 @@ using Test
         @. rθϕ[2,:] = π * rand()
         @. rθϕ[3,:] = 2 * π * rand() - π
 
+        println("First:")
         @time n_g = CryoFaBs.calc_numgals_per_cell(rθϕ, cfb)
+        println("Second:")
         @time n_g = CryoFaBs.calc_numgals_per_cell(rθϕ, cfb)
-        @time n_g = CryoFaBs.calc_numgals_per_cell(rθϕ, cfb)
+
+        @time n_g1 = CryoFaBs.calc_numgals_per_cell_v1(rθϕ, cfb)
+        @test n_g == n_g1
     end
 
 
