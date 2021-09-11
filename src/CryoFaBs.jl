@@ -309,6 +309,7 @@ function calc_numgals_per_cell(rθϕ, cfb::AngRadCryoFaB)
     #@time pix4 = @strided coord2cell.(Ref(cfb), rθϕ[1,:], rθϕ[2,:], rθϕ[3,:])
     #@assert pix1 == pix2
     #@assert pix1 == pix3
+    #@assert pix1 == pix4
     @time for p in pix3
         N[p] += 1
     end
