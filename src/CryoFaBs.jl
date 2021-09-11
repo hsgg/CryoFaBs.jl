@@ -197,7 +197,7 @@ function coord2cell(cfb::AngularCryoFaB, θ, ϕ)
     return p
 end
 
-function bin2coord(cfb::AngularCryoFaB, p)
+function cell2coord(cfb::AngularCryoFaB, p)
     error("unimplemented")
 end
 
@@ -241,7 +241,7 @@ function coord2cell(cfb::AngRadCryoFaB, r, θ, ϕ)
 end
 
 
-function bin2coord(cfb::AngRadCryoFaB, v)
+function cell2coord(cfb::AngRadCryoFaB, v)
     error("unimplemented")
 end
 
