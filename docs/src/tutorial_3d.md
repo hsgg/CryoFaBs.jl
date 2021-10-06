@@ -55,8 +55,8 @@ Next, we assign each galaxy to its nearest grid cell by calling
 n_g = calc_numgals_per_cell(rθϕ, cfb)
 δr = numgals2densitycontrast(n_g)
 ```
-where the second line further estimates the density contrast. As if you
-wouldn't be able to guess that from the name.
+where, as you might have guessed, the second line further estimates the density
+contrast from the number density. Assumptions...
 
 Now we can convert to cryospace,
 ```julia
