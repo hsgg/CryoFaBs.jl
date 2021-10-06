@@ -1,3 +1,4 @@
+# Copyright Henry S. Grasshorn Gebhardt
 # This is a module to calculate a Spline.
 
 # TODO:
