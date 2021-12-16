@@ -4,20 +4,12 @@
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://hsgg.github.io/CryoFaBs.jl/dev)
 [![Build Status](https://github.com/hsgg/CryoFaBs.jl/workflows/CI/badge.svg)](https://github.com/hsgg/CryoFaBs.jl/actions)
 
-Cryomania...
+This code accompanies a paper on [Harmonic analysis of isotropic fields on the
+sphere with arbitrary masks](https://arxiv.org/abs/2109.13352). It is primarily
+intended to be used in the context of large galaxy surveys. We use the code to
+derive custom eigenfunctions to the Laplacian on the sphere for arbitrary
+domains. Also, custom eigenfunctions for 3D analysis separable in the angular
+and radial directions.
 
-Can create a large cache in `~/.julia/scratchspaces/`.
-
-
-## Copyright Statement
-
-Copyright 2021, by the California Institute of Technology. ALL RIGHTS
-RESERVED. United States Government Sponsorship acknowledged. Any commercial
-use must be negotiated with the Office of Technology Transfer at the
-California Institute of Technology.
-
-This software may be subject to U.S. export control laws. By accepting this
-software, the user agrees to comply with all applicable U.S. export laws and
-regulations. User has the responsibility to obtain export licenses, or other
-export authority as may be required before exporting such information to
-foreign countries or providing access to foreign persons.
+The module can create a large cache in `~/.julia/scratchspaces/`, where it
+caches the Green's matrix.
