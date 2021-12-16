@@ -14,6 +14,13 @@ and radial directions.
 The module can create a large cache in `~/.julia/scratchspaces/`, where it
 caches the Green's matrix.
 
+For usage, see the [Documentation](https://hsgg.github.io/CryoFaBs.jl/dev/).
+
+Install with
+```julia
+julia> ]add https://github.com/hsgg/CryoFaBs.jl
+```
+
 
 ## Copyright notice
 
