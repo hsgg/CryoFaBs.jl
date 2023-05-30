@@ -14,6 +14,16 @@ It performs a harmonic analysis (usually of galaxy surveys) exploiting the
 isotropy on the sky despite non-isotropic window functions and masks. It does
 this in both 2D and 3D.
 
+## Installation
+
+To install, add the github repo to your julia project, like so:
+```julia
+julia>] add https://github.com/hsgg/CryoFaBs.jl.git
+```
+
+
+## Basic usage
+
 The central objects of this package are of the abstract type `CryoFaB`, which
 behaves like a matrix. For example, if `δr` is the density contrast in
 configuration space and `cfb` is a *CryoFaB*, then the transform into cryospace
