@@ -52,6 +52,7 @@ To transform from configuration space to cryospace,
 ```julia
 delta_lm = cfb \ delta_rhat
 ```
+To get the effective ell-modes in `delta_lm`, use the array `cfb.ell`.
 
 Compute the power spectrum:
 ```julia
