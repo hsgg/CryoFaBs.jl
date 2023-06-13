@@ -17,6 +17,7 @@ makedocs(;
         "Home" => "index.md",
 	"Tutorial in 2D" => "tutorial_2d.md",
 	"Tutorial in 3D" => "tutorial_3d.md",
+        "IO" => "io.md",
         "Reference" => "reference.md",
         "Index" => "myindex.md",
     ],
