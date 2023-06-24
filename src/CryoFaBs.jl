@@ -63,11 +63,6 @@ using TimerOutputs
 using FastTransforms
 #using SphericalHarmonics
 
-using Scratch
-cachedir_greensmatrix = ""
-function __init__()
-    global cachedir_greensmatrix = @get_scratch!("greensmatrix")
-end
 
 
 ################### CryoFaB basis ######################

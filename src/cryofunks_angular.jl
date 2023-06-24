@@ -34,10 +34,12 @@
 ############### Angular cryofunks ########################
 
 function get_angular_cryofunks(mask; G0=nothing, nside_hires=npix2nside(length(mask)))
-    if G0 == nothing
-        @time G0 = get_green(npix2nside(length(mask)), nside_hires=nside_hires)
+    if isnothing(G0)
+        nside = npix2nside(length(mask))
+        @timeit "Angular Green's matrix (nside,nside_hires)=($nside,$nside_hires)" G = calc_green(mask, nside_hires=nside_hires)
+    else
+        G = Hermitian(collect(G0[mask.>0,mask.>0]))
     end
-    G = Hermitian(collect(G0[mask.>0,mask.>0]))
 
     #fsky = sum(mask .> 0) / length(mask)
     #G = Hermitian(G + I / (4*π*fsky*length(mask)))
@@ -210,19 +212,6 @@ function calc_green(mask; nside_hires=npix2nside(length(mask)))
     bmask = collect(mask .> 0)
     mask = HealpixMap{eltype(mask), Healpix.RingOrder}(mask)
     return Hermitian(collect(get_green3(mask, nside_hires=nside_hires)[bmask,bmask]))
-end
-
-
-function get_green(nside::Int, fname=nothing; nside_hires=nside)
-    if fname == nothing
-        fname = "$cachedir_greensmatrix/Gang_nside$(nside)_$(nside_hires).bin"
-    end
-    npix = nside2npix(nside)
-    if !isfile(fname)
-        @timeit "Angular Green's matrix (nside,nside_hires)=($nside,$nside_hires)" G = calc_green(fill(1.0, npix), nside_hires=nside_hires)
-        write(fname, G)
-    end
-    return Hermitian(read!(fname, fill(NaN, npix, npix)))
 end
 
 
