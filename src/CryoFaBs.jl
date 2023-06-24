@@ -121,7 +121,7 @@ include("cryowindow_radial.jl")
 include("cryowindow_sfb.jl")
 
 
-function AngularCryoFaB(mask; nside_hires=npix2nside(length(mask)), method=:cryofunk)
+function AngularCryoFaB(mask; G0=nothing, nside_hires=npix2nside(length(mask)), method=:cryofunk)
     if !(typeof(mask) <: HealpixMap)
         mask = HealpixMap{Float64,Healpix.RingOrder}(mask)
     end
@@ -138,11 +138,11 @@ function AngularCryoFaB(mask; nside_hires=npix2nside(length(mask)), method=:cryo
         end
     end
     if method == :cryofunk
-        ℓ, Y, Yinv = get_angular_cryofunks(mask; nside_hires=nside_hires)
+        ℓ, Y, Yinv = get_angular_cryofunks(mask; G0=G0, nside_hires=nside_hires)
     elseif method == :integerLM
         ℓ, Y, Yinv = get_angular_continuous_cryofunks(mask; nside_hires=nside_hires)
     elseif method == :continuousfunks
-        ℓ, = get_angular_cryofunks(mask; nside_hires=nside_hires)
+        ℓ, = get_angular_cryofunks(mask; G0=G0, nside_hires=nside_hires)
         Y, Yinv = get_angular_continuous_cryofunks(ℓ, mask; nside_hires=nside_hires)
     end
     AngularCryoFaB(mask, nside, npixsurvey, hpix_full2survey, ℓ, Y, Yinv)
@@ -158,9 +158,9 @@ function block_vector(v, n)
 end
 
 
-function AngRadCryoFaB(mask, rmin, rmax, nbins)
+function AngRadCryoFaB(mask, rmin, rmax, nbins; G0=nothing)
     # angular part
-    angfab = AngularCryoFaB(mask)
+    angfab = AngularCryoFaB(mask; G0=G0)
     Angℓ = block_vector(angfab.ell, nbins)
     AngTrans = BlockDiagonal(fill(angfab.Trans, nbins))
     AngTransInv = BlockDiagonal(fill(angfab.TransInv, nbins))
