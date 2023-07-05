@@ -14,14 +14,29 @@ using Healpix
 using BlockDiagonals
 using Statistics
 using Test
+using Random
+using LinearAlgebra
 
 
 @testset "CryoFaBs.jl" begin
     @testset "AngularCryoFaB" begin
-        nside = 8
+        Random.seed!(1234567890)
+        nside = 2
         npix = nside2npix(nside)
-        mask = fill(1.0, npix)
+        #mask = fill(1.0, npix)
+        mask = rand([0.0,1.0], npix)
         cfb = AngularCryoFaB(mask; nside_hires=npix2nside(length(mask)))
+
+        fname = (@__DIR__) * "/test_rand_nside$nside.cfb"
+        #write(fname, cfb)  # write reference
+        cfb0 = AngularCryoFaB(fname)  # read reference
+
+        for f in fieldnames(AngularCryoFaB)
+            A = getfield(cfb, f)
+            B = getfield(cfb0, f)
+            @show f,norm(A .- B),norm(A.-B) / norm(A)
+            @test getfield(cfb, f) ≈ getfield(cfb0, f)  rtol=1e-14
+        end
     end
 
 
