@@ -38,7 +38,7 @@ function get_angular_cryofunks(mask; G0=nothing, nside_hires=npix2nside(length(m
         nside = npix2nside(length(mask))
         @timeit "Angular Green's matrix (nside,nside_hires)=($nside,$nside_hires)" G = calc_green(mask, nside_hires=nside_hires)
     else
-        G = Hermitian(collect(G0[mask.>0,mask.>0]))
+        G = Hermitian(collect(@view G0[mask.>0,mask.>0]))
     end
 
     #fsky = sum(mask .> 0) / length(mask)
@@ -211,7 +211,7 @@ end
 function calc_green(mask; nside_hires=npix2nside(length(mask)))
     bmask = collect(mask .> 0)
     mask = HealpixMap{eltype(mask), Healpix.RingOrder}(mask)
-    return Hermitian(collect(get_green3(mask, nside_hires=nside_hires)[bmask,bmask]))
+    return Hermitian(collect(@view get_green3(mask, nside_hires=nside_hires)[bmask,bmask]))
 end
 
 
@@ -227,7 +227,7 @@ function monopolize_green(G)
         G′ = Hermitian(G′)
         G′.data .= G′
     end
-    @show u'*u typeof(u*u')
+    @show u'*u  #typeof(u*u')
     @show typeof(G′)
     return G′
 end
