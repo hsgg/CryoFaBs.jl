@@ -26,6 +26,7 @@ using LinearAlgebra
         #mask = fill(1.0, npix)
         mask = rand([0.0,1.0], npix)
         cfb = AngularCryoFaB(mask; nside_hires=npix2nside(length(mask)))
+        @show size(cfb)
 
         fname = (@__DIR__) * "/test_rand_nside$nside.cfb"
         #write(fname, cfb)  # write reference
@@ -35,6 +36,11 @@ using LinearAlgebra
             A = getfield(cfb, f)
             B = getfield(cfb0, f)
             @show f,norm(A .- B),norm(A.-B) / norm(A)
+
+            if f ∈ [:Trans, :TransInv]
+                # Eigenvectors are not unique and very sensitive to numerical noise.
+                continue
+            end
             @test getfield(cfb, f) ≈ getfield(cfb0, f)  rtol=1e-14
         end
     end
@@ -64,7 +70,7 @@ using LinearAlgebra
         for n=1:1:nbins, iL=1:10
             # the mode to excite:
             NL = (iL - 1) * nbins + n
-            @show iL,n,NL
+            #@show iL,n,NL
 
             # excite that mode:
             R = blocks(cfb.RadTrans)[iL]
@@ -86,9 +92,9 @@ using LinearAlgebra
             idx = idx[idx .!= NL]
             prec = √eps(eltype(δnlm))
 
-            @show prec
-            @show δnlm[NL]
-            @show extrema(δnlm[idx])
+            #@show prec
+            #@show δnlm[NL]
+            #@show extrema(δnlm[idx])
 
             @test δnlm[NL] ≈ 1
             @test all(abs.(extrema(δnlm[idx])) .< prec)
