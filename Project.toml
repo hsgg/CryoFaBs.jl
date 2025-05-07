@@ -15,10 +15,11 @@ ThreadsX = "ac1d9e8a-700a-412c-b207-f0111f4b6c0d"
 TimerOutputs = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
 
 [compat]
-BlockDiagonals = "0.1"
-FastTransforms = "0.12, 0.13, 0.14, 0.15"
+BlockDiagonals = "0.1, 0.2"
+FastTransforms = "0.12, 0.13, 0.14, 0.15, 0.16, 0.17"
 Healpix = "3, 4"
 SpecialFunctions = "1, 2"
+Statistics = "1"
 ThreadsX = "0.1"
 TimerOutputs = "0.5"
 julia = "1"
